@@ -17,7 +17,7 @@ Trace-Net is a modern, robust, and visually rich security dashboard built with N
 
 ## Live Demo
 
-**[View Trace-Net on Vercel](https://vercel.com/garv-pankajs-projects/v0-futuristic-dashboard)**
+**[View Trace-Net on Vercel](https://csh-code-defenders.vercel.app/)**
 
 ## Getting Started
 
