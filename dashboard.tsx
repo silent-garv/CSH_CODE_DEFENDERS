@@ -1,6 +1,19 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { useRouter } from "next/navigation";
+// Auth0 user info fetch helper
+function getUserFromIdToken() {
+  if (typeof window === 'undefined') return null;
+  const idToken = localStorage.getItem('auth0_id_token');
+  if (!idToken) return null;
+  try {
+    const payload = JSON.parse(atob(idToken.split('.')[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+}
 import {
   Activity,
   AlertCircle,
@@ -42,6 +55,7 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
+
 export default function Dashboard() {
   const [theme, setTheme] = useState<"dark" | "light">("dark")
   const [systemStatus, setSystemStatus] = useState(85)
@@ -51,8 +65,19 @@ export default function Dashboard() {
   const [securityLevel, setSecurityLevel] = useState(75)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isLoading, setIsLoading] = useState(true)
-
+  const [user, setUser] = useState<{ name?: string; picture?: string } | null>(null);
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // Auth check
+  useEffect(() => {
+    // Try to get user from id_token in localStorage (for demo; use a real auth library in production)
+    const user = getUserFromIdToken();
+    setUser(user);
+    if (!user) {
+      router.replace('/login');
+    }
+  }, [router]);
 
   // Simulate data loading
   useEffect(() => {
@@ -107,8 +132,8 @@ export default function Dashboard() {
       color: string
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.x = Math.random() * (canvas?.width || 0)
+        this.y = Math.random() * (canvas?.height || 0)
         this.size = Math.random() * 3 + 1
         this.speedX = (Math.random() - 0.5) * 0.5
         this.speedY = (Math.random() - 0.5) * 0.5
@@ -119,10 +144,12 @@ export default function Dashboard() {
         this.x += this.speedX
         this.y += this.speedY
 
-        if (this.x > canvas.width) this.x = 0
-        if (this.x < 0) this.x = canvas.width
-        if (this.y > canvas.height) this.y = 0
-        if (this.y < 0) this.y = canvas.height
+        if (canvas) {
+          if (this.x > canvas.width) this.x = 0
+          if (this.x < 0) this.x = canvas.width
+          if (this.y > canvas.height) this.y = 0
+          if (this.y < 0) this.y = canvas.height
+        }
       }
 
       draw() {
@@ -265,10 +292,19 @@ export default function Dashboard() {
                 </Tooltip>
               </TooltipProvider>
 
-              <Avatar>
-                <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
-                <AvatarFallback className="bg-slate-700 text-cyan-500">CM</AvatarFallback>
-              </Avatar>
+              {user ? (
+                <Avatar>
+                  <AvatarImage src={user.picture || "/placeholder.svg?height=40&width=40"} alt={user.name || "User"} />
+                  <AvatarFallback className="bg-slate-700 text-cyan-500">
+                    {user.name ? user.name[0] : "U"}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <Avatar>
+                  <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
+                  <AvatarFallback className="bg-slate-700 text-cyan-500">U</AvatarFallback>
+                </Avatar>
+              )}
             </div>
           </div>
         </header>
@@ -1118,10 +1154,10 @@ function ActionButton({ icon: Icon, label }: { icon: LucideIcon; label: string }
 }
 
 // Add missing imports
-function Info(props) {
+function Info(props: React.ComponentProps<typeof AlertCircle>) {
   return <AlertCircle {...props} />
 }
 
-function Check(props) {
+function Check(props: React.ComponentProps<typeof Shield>) {
   return <Shield {...props} />
 }

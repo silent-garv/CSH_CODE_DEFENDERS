@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+// import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle"
 
 const links = [
@@ -37,9 +37,10 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const supabase = getSupabaseBrowserClient();
+  // const supabase = getSupabaseBrowserClient();
 
-  // Logout function removed; no navigation to /login
+  // Use Next.js Auth0 logout route
+  const logoutUrl = "/api/auth/logout";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -89,7 +90,17 @@ export function Navbar() {
             >
               <User className="size-5" />
             </Button>
-            {/* Profile dropdown removed logout */}
+            {/* Profile dropdown with Auth0 logout */}
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-40 rounded-md bg-white dark:bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                <a
+                  href={logoutUrl}
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
+                >
+                  Log out
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

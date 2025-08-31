@@ -51,28 +51,45 @@ export default function ReportsPage() {
           <CardTitle>Exports</CardTitle>
           <CardDescription>Trigger report generation</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <div>
-            <b>Report Summary:</b>
-            <ul className="text-xs text-muted-foreground list-disc pl-4 mt-1">
-              <li>Cases exported: 5</li>
-              <li>Last export: 2025-08-30 10:00</li>
-              <li>Format: PDF, CSV, JSON</li>
-            </ul>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" onClick={() => downloadReport('pdf')}>Export PDF</Button>
-            <Button variant="secondary" onClick={() => downloadReport('csv')}>Export CSV</Button>
-            <Button variant="secondary" onClick={() => downloadReport('json')}>Export JSON</Button>
-          </div>
-          <div className="flex flex-col items-center justify-center mt-4">
-            <div className="text-xs text-muted-foreground mb-1">Export Activity (static demo)</div>
-            <svg width="180" height="40">
-              <rect x="10" y="20" width="30" height="10" fill="#38bdf8" />
-              <rect x="50" y="10" width="30" height="20" fill="#fbbf24" />
-              <rect x="90" y="25" width="30" height="5" fill="#22d3ee" />
-              <rect x="130" y="5" width="30" height="30" fill="#f87171" />
-            </svg>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-8 items-start w-full">
+            <div className="flex-1 min-w-[220px]">
+              <b>Report Summary:</b>
+              <ul className="text-xs text-muted-foreground list-disc pl-4 mt-1">
+                <li>Cases exported: 5</li>
+                <li>Last export: 2025-08-30 10:00</li>
+                <li>Format: PDF, CSV, JSON</li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <Button variant="secondary" onClick={() => downloadReport('pdf')}>Export PDF</Button>
+                <Button variant="secondary" onClick={() => downloadReport('csv')}>Export CSV</Button>
+                <Button variant="secondary" onClick={() => downloadReport('json')}>Export JSON</Button>
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center w-full">
+              <div className="text-xs text-muted-foreground mb-1">Export Activity (ApexCharts demo)</div>
+              <div className="w-full max-w-[320px]">
+                {/* Larger bar chart for export activity */}
+                {typeof window !== 'undefined' && (
+                  (() => {
+                    const ReactApexChart = require("react-apexcharts").default;
+                    const options = {
+                      chart: { type: 'bar', height: 120, toolbar: { show: false } },
+                      plotOptions: { bar: { horizontal: false, borderRadius: 6, columnWidth: '40%' } },
+                      xaxis: { categories: ["PDF", "CSV", "JSON", "Other"], labels: { style: { fontSize: '15px' } } },
+                      yaxis: { min: 0, max: 5, labels: { style: { fontSize: '15px' } } },
+                      colors: ["#38bdf8", "#fbbf24", "#22d3ee", "#f87171"],
+                      grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
+                      dataLabels: { enabled: true, style: { fontSize: '14px' } },
+                    };
+                    const series = [
+                      { name: "Exports", data: [3, 2, 1, 4] },
+                    ];
+                    return <ReactApexChart options={options} series={series} type="bar" height={120} />;
+                  })()
+                )}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

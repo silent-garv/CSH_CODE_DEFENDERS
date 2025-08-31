@@ -17,6 +17,25 @@ export default function SearchPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <Input placeholder="e.g., phone:+15551234567 AND ip:93.184.216.34" />
+          {/* Simple bar chart for search activity */}
+          {typeof window !== 'undefined' && (
+            (() => {
+              const ReactApexChart = require("react-apexcharts").default;
+              const options = {
+                chart: { type: 'bar', height: 60, toolbar: { show: false } },
+                plotOptions: { bar: { horizontal: false, borderRadius: 4 } },
+                xaxis: { categories: ["Entities", "Sessions", "Patterns", "Cases"] },
+                yaxis: { min: 0, max: 5 },
+                colors: ["#38bdf8", "#fbbf24", "#22d3ee", "#f87171"],
+                grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
+                dataLabels: { enabled: true },
+              };
+              const series = [
+                { name: "Searches", data: [2, 4, 3, 1] },
+              ];
+              return <ReactApexChart options={options} series={series} type="bar" height={60} />;
+            })()
+          )}
           <Tabs defaultValue="entities" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="entities">Entities</TabsTrigger>

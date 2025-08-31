@@ -1,7 +1,28 @@
+"use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import dynamic from "next/dynamic";
+
+const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function CasesPage() {
+  // Entity relationship as a simple bar chart (demo)
+  const series = [
+    {
+      name: "Entities",
+      data: [1, 1],
+    },
+  ];
+  const options = {
+    chart: { type: 'bar' as const, height: 180, toolbar: { show: false } },
+    plotOptions: { bar: { horizontal: false, borderRadius: 6 } },
+    xaxis: { categories: ["User", "Domain"], title: { text: "Entity" } },
+    yaxis: { min: 0, max: 2, title: { text: "Count" } },
+    colors: ["#38bdf8", "#fbbf24"],
+    grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
+    dataLabels: { enabled: true },
+    tooltip: { y: { formatter: (val: number) => `${val}` } },
+  };
+
   return (
     <div className="mx-auto grid max-w-7xl gap-4">
       <header className="flex flex-col gap-2">
@@ -21,23 +42,16 @@ export default function CasesPage() {
             <div><b>Title:</b> Phishing Investigation</div>
             <div><b>Owner:</b> Alice Smith</div>
             <div><b>Tags:</b> phishing, urgent, email</div>
-            <Button size="sm" className="self-start">Save</Button>
           </CardContent>
         </Card>
 
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>Entity canvas</CardTitle>
-            <CardDescription>Entities and relationships (static demo)</CardDescription>
+            <CardDescription>Entities and relationships (ApexCharts demo)</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center">
-            <svg width="320" height="180">
-              <circle cx="80" cy="90" r="30" fill="#38bdf8" />
-              <circle cx="240" cy="90" r="30" fill="#fbbf24" />
-              <line x1="110" y1="90" x2="210" y2="90" stroke="#64748b" strokeWidth="4" />
-              <text x="80" y="90" textAnchor="middle" dy=".3em" fill="#fff" fontSize="16">User</text>
-              <text x="240" y="90" textAnchor="middle" dy=".3em" fill="#fff" fontSize="16">Domain</text>
-            </svg>
+            <ReactApexChart options={options} series={series} type="bar" height={180} />
             <div className="text-xs text-muted-foreground mt-2">User &rarr; Domain (email relationship)</div>
           </CardContent>
         </Card>
