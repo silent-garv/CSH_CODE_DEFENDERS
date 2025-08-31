@@ -64,7 +64,7 @@ Trace-Net is a modern, robust, and visually rich security dashboard built with N
 ## Credits
 
 - Built by Garv Pankaj and contributors
-- Bootstrapped with [v0.app](https://v0.app)
+
 
 ---
 
